@@ -2,8 +2,6 @@
 
 Passively maps the functional attack surface of a web application as you browse through Burp's proxy. Captures every in-scope endpoint, groups them visually by function using the app's own URL vocabulary, tracks parameters across the surface, and renders a pannable/zoomable map with full request/response viewer and PNG export.
 
-![Attack Surface Map](screenshots/screenshot.png)
-
 ## Screenshot
 
 ![Attack Surface Map](screenshots/screenshot.png)
