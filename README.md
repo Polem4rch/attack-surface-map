@@ -1,6 +1,8 @@
-# Surface Map – Burp Suite Extension
+# Attack Surface Map – Burp Suite Extension
 
-Passively maps the functional attack surface of a web application as you browse it through Burp's proxy. Captures every in-scope endpoint, groups them by function (Authentication, Account, Money movement, Commerce, Data/API, Admin), tracks parameters across the surface, and renders a pannable/zoomable visual map with full request/response viewer and PNG export.
+Passively maps the functional attack surface of a web application as you browse through Burp's proxy. Captures every in-scope endpoint, groups them visually by function using the app's own URL vocabulary, tracks parameters across the surface, and renders a pannable/zoomable map with full request/response viewer and PNG export.
+
+![Attack Surface Map](screenshots/screenshot.png)
 
 ## Screenshot
 
@@ -8,24 +10,27 @@ Passively maps the functional attack surface of a web application as you browse 
 
 ## Features
 
-- **Passive capture** – records endpoints as you browse; no active scanning
+- **Passive capture** – records endpoints as you browse; no active scanning, no crawler
 - **Scope-filtered** – only in-scope traffic (via Target → Scope) is recorded
-- **Functional grouping** – keyword-driven categorisation (editable in `HtmlRenderer.java`)
-- **NEW highlighting** – endpoints first seen since the last baseline are visually flagged
+- **Functional grouping** – color-coded by feature area, named from the app's own path segments (no hardcoded labels)
+- **Version prefix stripping** – `/v1/transfers/send` shows as `transfers → send`
+- **NEW highlighting** – endpoints first seen since last baseline are visually flagged
 - **Parameter analysis** – click any parameter to highlight every endpoint that uses it
-- **Request/response viewer** – full raw HTTP for every captured endpoint, with copy buttons
-- **Project import/export** – save and reload `.json` project files per engagement
-- **PNG export** – full-resolution diagram download from the browser map
+- **Request/response viewer** – full raw HTTP per endpoint, stacked view with scroll and copy
+- **Project import/export** – portable `.json` files per engagement, merge across sessions
+- **PNG export** – full-resolution diagram for reports
 
 ## Requirements
 
 - Burp Suite 2022.9.5+ (Montoya API)
-- Java 17 JDK (for building)
-- Gradle 8.x (for building)
+- Java 17+ (for building)
+- Gradle 8+ (for building)
 
 ## Build
 
 ```bash
+gradle wrapper
+export JAVA_HOME=$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home  # macOS
 ./gradlew build
 ```
 
@@ -33,57 +38,31 @@ The output JAR is at `build/libs/surface-map.jar`.
 
 ## Install in Burp
 
-1. Open Burp Suite.
-2. Go to **Extensions → Installed → Add**.
-3. Set **Extension type** to **Java**.
-4. Select `build/libs/surface-map.jar`.
-5. Click **Next** – you should see "Surface Map loaded." in the Output tab and a new **Surface Map** tab in Burp.
+1. Go to **Extensions → Installed → Add**
+2. Set **Extension type** to **Java**
+3. Select `build/libs/surface-map.jar`
+4. Click **Next** — you should see "Surface Map loaded." in the Output tab and a new **Surface Map** tab in Burp
 
 ## Usage
 
-1. Define your target in **Target → Scope**.
-2. In the **Surface Map** tab, tick **Capture (proxy, in-scope)**.
-3. Browse the target through Burp's proxy, opening every menu, tab, and screen.
-4. Click **Open map in browser** to view the visual map.
-5. Click **Set baseline** when you want the current state to be the comparison point for future sessions.
-
-## Submission checklist (BApp Store acceptance criteria)
-
-| Criterion | Status |
-|---|---|
-| Unique function | ✅ No existing BApp maps functional surface with param analysis |
-| Clear name | ✅ "Surface Map" |
-| Operates securely | ✅ HTTP messages treated as untrusted; UI data not auto-filled from traffic |
-| Includes all dependencies | ✅ No runtime deps beyond Montoya API (provided by Burp) |
-| Uses threads | ✅ Handler returns immediately; model/disk work on background executor |
-| Unloads cleanly | ✅ `registerUnloadingHandler` shuts down both executor services |
-| Uses Montoya API | ✅ `net.portswigger.burp.extensions:montoya-api` via Gradle |
-| GUI parenting | ✅ All dialogs parented to `SwingUtils.suiteFrame()` |
-| Large project safety | ✅ Request/response bytes snapshotted before handler returns; capped at 250 KB |
-| Offline working | ✅ No external network calls; all processing is local |
+1. Define your target in **Target → Scope**
+2. In the **Surface Map** tab, tick **Capture (proxy, in-scope)**
+3. Browse the target through Burp's proxy, opening every menu, tab, and screen
+4. Click **Open map in browser** to view the visual map
+5. Click **Set baseline** to mark the current state — future sessions highlight only new endpoints
+6. Use **Export project** to save a `.json` file per engagement; **Import project** to reload or merge
 
 ## Project structure
 
 ```
-surface-map/
-├── build.gradle
-├── settings.gradle
-├── README.md
-└── src/main/java/io/github/surfacemap/
-    ├── SurfaceMapExtension.java   # BurpExtension entry point + unload handler
-    ├── SurfaceMapHandler.java     # HttpHandler (passive, proxy+scope filtered)
-    ├── SurfaceMapModel.java       # Thread-safe data model + persistence
-    ├── SurfaceMapTab.java         # Swing UI tab
-    └── HtmlRenderer.java          # Builds the self-contained HTML map
+src/main/java/io/github/surfacemap/
+├── SurfaceMapExtension.java   # BurpExtension entry point + unload handler
+├── SurfaceMapHandler.java     # HttpHandler (passive, proxy + scope filtered)
+├── SurfaceMapModel.java       # Thread-safe data model + persistence + JSON parser
+├── SurfaceMapTab.java         # Swing UI tab
+└── HtmlRenderer.java          # Builds the self-contained HTML map
 ```
 
-## Submitting to the BApp Store
+## License
 
-1. Push this repo to GitHub (public).
-2. Confirm it meets all acceptance criteria above.
-3. Open a **New extension submission** issue on [PortSwigger/extension-portal](https://github.com/PortSwigger/extension-portal) with:
-   - Link to your GitHub repo
-   - Name: **Surface Map**
-   - Description: *Passively maps the functional attack surface of a web application as you browse through Burp's proxy. Captures endpoints, groups them by function, tracks shared parameters, and renders a visual map with pan/zoom, copy, and PNG export.*
-   - Setup: *Build with `./gradlew build`, load `build/libs/surface-map.jar` as a Java extension. No dependencies beyond Burp itself. Define target scope before capturing.*
-4. Track progress on the [Extension submissions board](https://github.com/orgs/PortSwigger/projects/1/views/1).
+MIT
