@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group   = 'io.github.surfacemap'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'net.portswigger.burp.extensions:montoya-api:2026.4'
+}
+
+jar {
+    archiveFileName = 'surface-map.jar'
+    // fat jar – embed nothing (Montoya API is provided by Burp at runtime)
+    // JSON serialisation is hand-rolled so there are no third-party deps
+    manifest {
+        attributes 'Implementation-Title': 'Surface Map',
+                   'Implementation-Version': version
+    }
+}

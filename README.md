@@ -72,3 +72,14 @@ surface-map/
     ├── SurfaceMapTab.java         # Swing UI tab
     └── HtmlRenderer.java          # Builds the self-contained HTML map
 ```
+
+## Submitting to the BApp Store
+
+1. Push this repo to GitHub (public).
+2. Confirm it meets all acceptance criteria above.
+3. Open a **New extension submission** issue on [PortSwigger/extension-portal](https://github.com/PortSwigger/extension-portal) with:
+   - Link to your GitHub repo
+   - Name: **Surface Map**
+   - Description: *Passively maps the functional attack surface of a web application as you browse through Burp's proxy. Captures endpoints, groups them by function, tracks shared parameters, and renders a visual map with pan/zoom, copy, and PNG export.*
+   - Setup: *Build with `./gradlew build`, load `build/libs/surface-map.jar` as a Java extension. No dependencies beyond Burp itself. Define target scope before capturing.*
+4. Track progress on the [Extension submissions board](https://github.com/orgs/PortSwigger/projects/1/views/1).
