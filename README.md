@@ -6,9 +6,9 @@ Passively maps the functional attack surface of a web application as you browse 
 
 ![Attack Surface Map](screenshots/screenshot.png)
 
-![Attack Surface Map](screenshots/screenshot 2.png)
+![Attack Surface Map](screenshots/screenshot2.png)
 
-![Attack Surface Map](screenshots/screenshot 3.png)
+![Attack Surface Map](screenshots/screenshot3.png)
 
 ## Features
 
